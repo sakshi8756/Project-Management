@@ -28,10 +28,10 @@ const Signup = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <form style={styles.form} onSubmit={handleSubmit}>
-        <h2 style={styles.heading}>Create Account 🚀</h2>
-        <p style={styles.subText}>Sign up to get started</p>
+    <div className="h-screen flex justify-center items-center bg-gray-100">
+      <form className="bg-white p-9 rounded-lg shadow-lg w-80 flex flex-col" onSubmit={handleSubmit}>
+        <h2 className="text-center mb-1">Create Account 🚀</h2>
+        <p className="text-center mb-5 text-gray-600 text-sm">Sign up to get started</p>
 
         <input
           type="text"
@@ -39,7 +39,7 @@ const Signup = () => {
           placeholder="Enter Name"
           value={form.name}
           onChange={handleChange}
-          style={styles.input}
+          className="p-3 mb-4 rounded-md border border-gray-300 outline-none"
           required
         />
 
@@ -49,7 +49,7 @@ const Signup = () => {
           placeholder="Enter Email"
           value={form.email}
           onChange={handleChange}
-          style={styles.input}
+          className="p-3 mb-4 rounded-md border border-gray-300 outline-none"
           required
         />
 
@@ -59,7 +59,7 @@ const Signup = () => {
           placeholder="Enter Password"
           value={form.password}
           onChange={handleChange}
-          style={styles.input}
+          className="p-3 mb-4 rounded-md border border-gray-300 outline-none"
           required
         />
 
@@ -69,76 +69,21 @@ const Signup = () => {
           placeholder="Confirm Password"
           value={form.confirmPassword}
           onChange={handleChange}
-          style={styles.input}
+          className="p-3 mb-4 rounded-md border border-gray-300 outline-none"
           required
         />
 
-        <button type="submit" style={styles.button}>
+        <button type="submit" className="p-3 bg-blue-500 text-white border-none rounded-md cursor-pointer font-bold">
           Sign Up
         </button>
 
-        <p style={styles.footer}>
+        <p className="mt-4 text-center text-sm">
           Already have an account?{" "}
-          <span style={styles.link}>Login</span>
+          <span className="text-blue-500 cursor-pointer font-bold">Login</span>
         </p>
       </form>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    background: "#f5f5f5"
-  },
-  form: {
-    background: "#fff",
-    padding: "35px",
-    borderRadius: "12px",
-    boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-    width: "320px",
-    display: "flex",
-    flexDirection: "column"
-  },
-  heading: {
-    textAlign: "center",
-    marginBottom: "5px"
-  },
-  subText: {
-    textAlign: "center",
-    marginBottom: "20px",
-    color: "#666",
-    fontSize: "14px"
-  },
-  input: {
-    padding: "12px",
-    marginBottom: "15px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-    outline: "none"
-  },
-  button: {
-    padding: "12px",
-    background: "#667eea",
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "bold"
-  },
-  footer: {
-    marginTop: "15px",
-    textAlign: "center",
-    fontSize: "14px"
-  },
-  link: {
-    color: "#667eea",
-    cursor: "pointer",
-    fontWeight: "bold"
-  }
 };
 
 export default Signup;

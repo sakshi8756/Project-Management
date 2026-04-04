@@ -1,70 +1,67 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.heading}>Welcome to Home Page 🏠</h1>
-        <p style={styles.text}>
-          You have successfully logged in. This is your dashboard.
-        </p>
+    <div className="font-sans bg-slate-50">
 
-        <div style={styles.buttonGroup}>
-          <button style={styles.button}>Profile</button>
-          <button style={styles.button}>Settings</button>
-          <button style={styles.logout}>Logout</button>
+      {/* HERO SECTION */}
+      <section className="text-center py-20 px-5">
+        <h1 className="text-4xl mb-2.5">
+          Smart Developer Workflow Management 🚀
+        </h1>
+        <p className="text-gray-600 mb-5">
+          Manage tasks, dependencies and teams efficiently in one platform.
+        </p>
+        <div className="flex justify-center gap-2.5">
+          <Link to="/Dashboard" className="bg-blue-600 text-white py-3 px-5 rounded-lg cursor-pointer">Go to Dashboard</Link>
+          <button className="bg-gray-200 py-3 px-5 rounded-lg cursor-pointer">View Projects</button>
         </div>
-      </div>
+      </section>
+
+      {/* FEATURES */}
+      <section className="text-center py-12.5 px-5">
+        <h2>Core Features</h2>
+
+        <div className="flex justify-center gap-5 mt-5 flex-wrap">
+          <div className="bg-white p-5 w-64 rounded-xl shadow-md">
+            <h3>🔗 Dependency System</h3>
+            <p>Auto manage task flow (Backend → Frontend → UI).</p>
+          </div>
+
+          <div className="bg-white p-5 w-64 rounded-xl shadow-md">
+            <h3>⚡ Parallel Workflow</h3>
+            <p>Work simultaneously using mock APIs.</p>
+          </div>
+
+          <div className="bg-white p-5 w-64 rounded-xl shadow-md">
+            <h3>📊 Project Insights</h3>
+            <p>Track progress, delays and productivity.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* DASHBOARD PREVIEW */}
+      <section className="p-12.5 text-center">
+        <h2>Hi Sakshi 👋</h2>
+        <p>Your project overview</p>
+
+        <div className="bg-blue-600 text-white p-5 rounded-xl w-75 mx-auto mt-5">
+          <p><b>Project:</b> DevSutra</p>
+          <p>Status: In Progress</p>
+          <p>Completion: 65%</p>
+          <button className="mt-2.5 py-2 px-3.75 bg-white text-blue-600 rounded-md cursor-pointer">View Details</button>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-blue-900 text-white p-10 text-center">
+        <h2>DevSutra</h2>
+        <p>Building smarter workflows for developers.</p>
+      </footer>
+
     </div>
   );
-};
-
-const styles = {
-  container: {
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    background: "#f5f5f5"
-  },
-  card: {
-    background: "#fff",
-    padding: "40px",
-    borderRadius: "12px",
-    boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-    textAlign: "center",
-    width: "350px"
-  },
-  heading: {
-    marginBottom: "10px"
-  },
-  text: {
-    color: "#555",
-    marginBottom: "25px"
-  },
-  buttonGroup: {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: "10px"
-  },
-  button: {
-    flex: 1,
-    padding: "10px",
-    background: "#667eea",
-    color: "#fff",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer"
-  },
-  logout: {
-    flex: 1,
-    padding: "10px",
-    background: "#ff4d4f",
-    color: "#fff",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer"
-  }
 };
 
 export default Home;

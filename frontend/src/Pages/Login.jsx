@@ -19,10 +19,13 @@ const Login = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <form style={styles.form} onSubmit={handleSubmit}>
-        <h2 style={styles.heading}>Welcome Back 👋</h2>
-        <p style={styles.subText}>Login to your account</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <form
+        className="bg-white p-9 rounded-2xl shadow-[0_20px_25px_rgba(0,0,0,0.2)] w-[320px] flex flex-col"
+        onSubmit={handleSubmit}
+      >
+        <h2 className="text-center mb-1 text-2xl font-semibold">Welcome Back 👋</h2>
+        <p className="text-center mb-5 text-sm text-gray-500">Login to your account</p>
 
         <input
           type="email"
@@ -30,7 +33,7 @@ const Login = () => {
           placeholder="Enter Email"
           value={form.email}
           onChange={handleChange}
-          style={styles.input}
+          className="px-3 py-3 mb-4 rounded-xl border border-gray-300 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
           required
         />
 
@@ -40,75 +43,24 @@ const Login = () => {
           placeholder="Enter Password"
           value={form.password}
           onChange={handleChange}
-          style={styles.input}
+          className="px-3 py-3 mb-4 rounded-xl border border-gray-300 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
           required
         />
 
-        <button type="submit" style={styles.button}>
+        <button
+          type="submit"
+          className="px-3 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition"
+        >
           Login
         </button>
 
-        <p style={styles.footer}>
-          Don’t have an account? <span style={styles.link}>Sign up</span>
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Don’t have an account?{" "}
+          <span className="text-indigo-600 font-bold cursor-pointer">Sign up</span>
         </p>
       </form>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    background: "#f5f5f5"
-  },
-  form: {
-    background: "#fff",
-    padding: "35px",
-    borderRadius: "12px",
-    boxShadow: "0 20px 25px rgba(0,0,0,0.2)",
-    width: "320px",
-    display: "flex",
-    flexDirection: "column"
-  },
-  heading: {
-    textAlign: "center",
-    marginBottom: "5px"
-  },
-  subText: {
-    textAlign: "center",
-    marginBottom: "20px",
-    color: "#666",
-    fontSize: "14px"
-  },
-  input: {
-    padding: "12px",
-    marginBottom: "15px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-    outline: "none"
-  },
-  button: {
-    padding: "12px",
-    background: "#667eea",
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "bold"
-  },
-  footer: {
-    marginTop: "15px",
-    textAlign: "center",
-    fontSize: "14px"
-  },
-  link: {
-    color: "#667eea",
-    cursor: "pointer",
-    fontWeight: "bold"
-  }
 };
 
 export default Login;
