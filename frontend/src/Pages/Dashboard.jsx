@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const stats = [
@@ -21,13 +22,31 @@ const Dashboard = () => {
       <div className="w-64 bg-blue-900 text-white p-5">
         <h2 className="text-2xl font-bold mb-8">DevSutra</h2>
 
-        <ul className="space-y-4">
-          <li className="cursor-pointer hover:text-gray-300">Dashboard</li>
-          <li className="cursor-pointer hover:text-gray-300">Projects</li>
-          <li className="cursor-pointer hover:text-gray-300">Tasks</li>
-          <li className="cursor-pointer hover:text-gray-300">Team</li>
-          <li className="cursor-pointer hover:text-gray-300">Settings</li>
-        </ul>
+       <ul className="space-y-4">
+
+  <li>
+    <Link to="/dashboard" className="block cursor-pointer hover:text-gray-300">Dashboard</Link></li>
+  <li>
+    <Link to="/project" className="block cursor-pointer hover:text-gray-300">
+      Projects
+    </Link>
+  </li>
+  <li>
+    <Link to="/task" className="block cursor-pointer hover:text-gray-300">
+      Tasks
+    </Link>
+  </li>
+  <li>
+    <Link to="/team" className="block cursor-pointer hover:text-gray-300">
+      Team
+    </Link>
+  </li>
+  <li>
+    <Link to="/settings" className="block cursor-pointer hover:text-gray-300">
+      Settings
+    </Link>
+  </li>
+</ul>
       </div>
 
       {/* MAIN CONTENT */}
