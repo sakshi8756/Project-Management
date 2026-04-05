@@ -8,6 +8,7 @@ import Dashboard from './Pages/Dashboard'
 import Project from './Pages/Project'
 import Team from './Pages/Team'
 import Task from './Pages/Task'
+import Setting from './Pages/Setting'
 
 const App = () => {
   return ( 
@@ -21,6 +22,7 @@ const App = () => {
       <Route path='/Project' element={<Project/>}/>
       <Route path='/Team' element={<Team/>}/>
       <Route path='/Task' element={<Task/>}/>
+      <Route path='/Setting' element={<Setting/>}/>
 
 
       

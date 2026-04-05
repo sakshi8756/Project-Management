@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
+  const [open, setOpen] = useState(true);
+
   const stats = [
     { title: "Total Tasks", value: 24 },
     { title: "Completed", value: 16 },
@@ -19,34 +21,56 @@ const Dashboard = () => {
     <div className="flex min-h-screen bg-gray-100">
 
       {/* SIDEBAR */}
-      <div className="w-64 bg-blue-900 text-white p-5">
-        <h2 className="text-2xl font-bold mb-8">DevSutra</h2>
+      <div
+        className={`bg-blue-900 text-white p-5 transition-all duration-300 ${
+          open ? "w-64" : "w-16"
+        }`}
+      >
+        {/* TOP */}
+        <div className="flex justify-between items-center mb-8">
+          {open && <h2 className="text-2xl font-bold">DevSutra</h2>}
 
-       <ul className="space-y-4">
+          {/* TOGGLE BUTTON */}
+          <button onClick={() => setOpen(!open)}>
+            {open ? "⬅️" : "➡️"}
+          </button>
+        </div>
 
-  <li>
-    <Link to="/dashboard" className="block cursor-pointer hover:text-gray-300">Dashboard</Link></li>
-  <li>
-    <Link to="/project" className="block cursor-pointer hover:text-gray-300">
-      Projects
-    </Link>
-  </li>
-  <li>
-    <Link to="/task" className="block cursor-pointer hover:text-gray-300">
-      Tasks
-    </Link>
-  </li>
-  <li>
-    <Link to="/team" className="block cursor-pointer hover:text-gray-300">
-      Team
-    </Link>
-  </li>
-  <li>
-    <Link to="/settings" className="block cursor-pointer hover:text-gray-300">
-      Settings
-    </Link>
-  </li>
-</ul>
+        {/* MENU */}
+        <ul className="space-y-4">
+
+          <li>
+            <Link to="/dashboard" className="block hover:text-gray-300">
+              {open ? "Dashboard" : "🏠"}
+            </Link>
+          </li>
+
+          <li>
+            <Link to="/project" className="block hover:text-gray-300">
+              {open ? "Projects" : "📁"}
+            </Link>
+          </li>
+
+          <li>
+            <Link to="/task" className="block hover:text-gray-300">
+              {open ? "Tasks" : "📋"}
+            </Link>
+          </li>
+
+          <li>
+            <Link to="/team" className="block hover:text-gray-300">
+              {open ? "Team" : "👥"}
+            </Link>
+          </li>
+
+          {/* FIXED ROUTE */}
+          <li>
+            <Link to="/settings" className="block hover:text-gray-300">
+              {open ? "Settings" : "⚙️"}
+            </Link>
+          </li>
+
+        </ul>
       </div>
 
       {/* MAIN CONTENT */}
@@ -58,7 +82,7 @@ const Dashboard = () => {
           <p className="text-gray-600">Hi Sakshi 👋</p>
         </div>
 
-        {/* STATS CARDS */}
+        {/* STATS */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {stats.map((item, index) => (
             <div key={index} className="bg-white p-4 rounded-xl shadow">
