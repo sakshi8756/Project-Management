@@ -65,8 +65,8 @@ const Dashboard = () => {
 
           {/* FIXED ROUTE */}
           <li>
-            <Link to="/settings" className="block hover:text-gray-300">
-              {open ? "Settings" : "⚙️"}
+            <Link to="/setting" className="block hover:text-gray-300">
+              {open ? "Setting" : "⚙️"}
             </Link>
           </li>
 

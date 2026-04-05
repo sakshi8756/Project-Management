@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Tasks = () => {
   const tasks = [
@@ -46,9 +47,9 @@ const Tasks = () => {
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">📋 Task Management</h1>
-        <button className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700">
+        <Link to='/CreateTask' className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700">
           + Create Task
-        </button>
+        </Link>
       </div>
 
       {/* STATS */}

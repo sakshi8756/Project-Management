@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Team = () => {
   const members = [
@@ -40,9 +41,9 @@ const Team = () => {
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">👥 Team Management</h1>
-        <button className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700">
+        <Link to='/AddMember' className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700">
           + Add Member
-        </button>
+        </Link>
       </div>
 
       {/* TOP STATS */}

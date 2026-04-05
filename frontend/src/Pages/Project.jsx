@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Project = () => {
   const projects = [
@@ -29,9 +30,9 @@ const Project = () => {
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">🚀 Projects</h1>
-        <button className="bg-blue-600 text-white px-5 py-2 rounded-xl shadow hover:bg-blue-700 transition">
+        <Link to="/NewProject"className="bg-blue-600 text-white px-5 py-2 rounded-xl shadow hover:bg-blue-700 transition">
           + New Project
-        </button>
+        </Link>
       </div>
 
       {/* GRID */}
