@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const Home = () => {
+  // const [name, setName] = useState('');
+  // const [profession, setprofession] = useState('');
+  const [data, setData] = useState(null);
+  const fetchData = async () => {
+    const res = await fetch('http://localhost:4000/details')
+    const data = await res.json();
+    setData(data);
+    // setName(data.name);
+    // setprofession(data.profession);
+    console.log(data);
+  }
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <div className="font-sans bg-slate-50">
 
@@ -43,7 +58,8 @@ const Home = () => {
 
       {/* DASHBOARD PREVIEW */}
       <section className="p-12.5 text-center">
-        <h2>Hi Sakshi 👋</h2>
+        <h2>Hi {data?.name} 👋</h2>
+        <h2>{data?.profession}</h2>
         <p>Your project overview</p>
 
         <div className="bg-blue-600 text-white p-5 rounded-xl w-75 mx-auto mt-5">
