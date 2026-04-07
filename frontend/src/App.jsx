@@ -1,7 +1,6 @@
 import React from 'react'
 import Navbar from './Components/Navbar'
 import { Routes ,Route } from 'react-router-dom'
-import Login from './Pages/Login'
 import Home from './Pages/Home'
 import Signup from './Pages/Signup'
 import Dashboard from './Pages/Dashboard'
@@ -12,13 +11,14 @@ import Setting from './Pages/Setting'
 import NewProject from './Pages/NewProject'
 import CreateTask from './Pages/CreateTask'
 import AddMember from './Pages/AddMember'
+import Login from './Pages/Login'
 
 const App = () => {
   return ( 
     <>
     <Navbar/>
     <Routes>
-      <Route path='/login' element={<Login/>}/>
+      <Route path='/Login' element={<Login/>}/>
       <Route path='/' element={<Home/>}/>
       <Route path='/Signup' element={<Signup/>}/>
       <Route path='/Dashboard' element={<Dashboard/>}/>

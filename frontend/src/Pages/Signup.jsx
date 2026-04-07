@@ -15,16 +15,30 @@ const Signup = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (form.password !== form.confirmPassword) {
       alert("Passwords do not match ❌");
       return;
     }
-
-    console.log("Signup Data:", form);
-    // 👉 yaha backend connect kar sakti ho
+    try {
+      const res = await fetch("http://localhost:4000/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          password: form.password
+        })
+      });
+      const data = await res.json();
+      alert(data.message);
+      console.log(data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (

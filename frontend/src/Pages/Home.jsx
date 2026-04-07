@@ -6,13 +6,19 @@ const Home = () => {
   // const [name, setName] = useState('');
   // const [profession, setprofession] = useState('');
   const [data, setData] = useState(null);
+
   const fetchData = async () => {
-    const res = await fetch('http://localhost:4000/details')
-    const data = await res.json();
-    setData(data);
-    // setName(data.name);
-    // setprofession(data.profession);
-    console.log(data);
+    try {
+      const res = await fetch('http://localhost:4000/details')
+      const data = await res.json();
+      setData(data);
+      // setName(data.name);
+      // setprofession(data.profession);
+      console.log(data);
+    }
+    catch (err) {
+      console.error('Error fetching data:', err);
+    }
   }
   useEffect(() => {
     fetchData();
