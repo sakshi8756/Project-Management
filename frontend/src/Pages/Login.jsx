@@ -13,10 +13,33 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login Data:", form);
-  };
+
+    try {
+      const res = await fetch("http://localhost:4000/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+      alert(data.message);
+      console.log(data);
+      setForm({
+        email: "",
+        password: ""
+      });}
+       catch (error) {
+      alert(error.message || "Login failed ❌");
+      console.error(error);}};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

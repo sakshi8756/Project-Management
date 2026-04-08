@@ -10,7 +10,7 @@ const Team = () => {
       completed: 4,
     },
     {
-      name: "Vansh",
+      name: "Priya",
       role: "Backend",
       tasks: 8,
       completed: 5,

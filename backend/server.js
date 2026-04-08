@@ -49,6 +49,23 @@ app.post('/signin', (req, res) => {
   });
 });
 
+app.post('/signin', (req, res) => {
+  const { email, password } = req.body;
+
+  console.log("Login Data:", req.body);
+
+  if (email === "test@gmail.com" && password === "1234") {
+    return res.json({
+      message: "Login successful ✅",
+      user: { email }
+    });
+  }
+
+  res.status(401).json({
+    message: "Invalid email or password ❌"
+  });
+});
+
 app.listen(4000, () => {
   console.log("Server running on port 4000");
 });
