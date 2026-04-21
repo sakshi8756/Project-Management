@@ -14,16 +14,6 @@ app.get('/', (req, res) => {
   res.json({ message: 'Hello World' });
 });
 
-// Test route
-app.get('/details', (req, res) => {
-  res.json({ name: 'Sakshi', age: 20, profession: 'Software Engineer' });
-});
-
-// GET signup (for browser)
-app.get('/signup', (req, res) => {
-  res.send("Signup API works. Use POST request.");
-});
-
 
 // ✅ SIGNUP (SAVE TO SQL)
 app.post('/signup', (req, res) => {
