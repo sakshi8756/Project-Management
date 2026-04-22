@@ -70,6 +70,51 @@ app.post('/signin', (req, res) => {
   });
 });
 
+// ✅ CREATE PROJECT
+app.post('/create-project', (req, res) => {
+  const { name, description, userId } = req.body;
+
+  const sql = "INSERT INTO projects (project_name, description, created_by) VALUES (?, ?, ?)";
+
+  database.query(sql, [name, description, userId], (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        message: "Error creating project ❌"
+      });
+    }
+
+    const projectId = result.insertId;
+
+    // make creator admin
+    database.query(
+      "INSERT INTO project_members (user_id, project_id, role) VALUES (?, ?, 'admin')",
+      [userId, projectId]
+    );
+
+    res.json({
+      message: "Project created ✅"
+    });
+  });
+});
+
+// ✅ ADD MEMBER
+app.post('/add-member', (req, res) => {
+  const { userId, projectId, role } = req.body;
+
+  const sql = "INSERT INTO project_members (user_id, project_id, role) VALUES (?, ?, ?)";
+
+  database.query(sql, [userId, projectId, role], (err) => {
+    if (err) {
+      return res.status(500).json({
+        message: "Error adding member ❌"
+      });
+    }
+
+    res.json({
+      message: "Member added ✅"
+    });
+  });
+});
 
 // Server start
 app.listen(4000, () => {
