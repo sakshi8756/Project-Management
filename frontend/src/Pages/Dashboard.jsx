@@ -22,9 +22,8 @@ const Dashboard = () => {
 
       {/* SIDEBAR */}
       <div
-        className={`bg-blue-900 text-white p-5 transition-all duration-300 ${
-          open ? "w-64" : "w-16"
-        }`}
+        className={`bg-blue-900 text-white p-5 transition-all duration-300 ${open ? "w-64" : "w-16"
+          }`}
       >
         {/* TOP */}
         <div className="flex justify-between items-center mb-8">
@@ -40,8 +39,8 @@ const Dashboard = () => {
         <ul className="space-y-4">
 
           <li>
-            <Link to="/dashboard" className="block hover:text-gray-300">
-              {open ? "Dashboard" : "🏠"}
+            <Link to="/" className="block hover:text-gray-300">
+              {open ? "Home" : "🏠"}
             </Link>
           </li>
 

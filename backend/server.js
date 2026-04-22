@@ -116,6 +116,19 @@ app.post('/add-member', (req, res) => {
   });
 });
 
+// ✅ GET ALL PROJECTS
+app.get('/projects', (req, res) => {
+  const sql = "SELECT * FROM projects";
+
+  database.query(sql, (err, result) => {
+    if (err) {
+      return res.status(500).json({ message: "Error ❌" });
+    }
+
+    res.json(result);
+  });
+});
+
 // Server start
 app.listen(4000, () => {
   console.log("Server running on port 4000");
