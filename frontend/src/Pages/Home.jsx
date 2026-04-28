@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 const Home = () => {
-  // const [name, setName] = useState('');
-  // const [profession, setprofession] = useState('');
   const [data, setData] = useState(null);
 
   const fetchData = async () => {
@@ -12,8 +10,6 @@ const Home = () => {
       const res = await fetch('http://localhost:4000/details')
       const data = await res.json();
       setData(data);
-      // setName(data.name);
-      // setprofession(data.profession);
       console.log(data);
     }
     catch (err) {
@@ -27,7 +23,7 @@ const Home = () => {
     <div className="font-sans bg-slate-50">
 
       {/* HERO SECTION */}
-      <section className="text-center py-20 px-5">
+      <section className="text-center py-20 px-10">
         <h1 className="text-4xl mb-2.5">
           Smart Developer Workflow Management 🚀
         </h1>
