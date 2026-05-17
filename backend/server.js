@@ -129,6 +129,31 @@ app.get('/projects', (req, res) => {
   });
 });
 
+// GET ALL PROJECTS
+app.get('/projects', (req, res) => {
+  const sql = "SELECT * FROM projects";
+
+  database.query(sql, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        message: "Error fetching projects ❌"
+      });
+    }
+
+    res.json(result);
+  });
+});
+
+app.delete('/delete-project/:id', (req, res) => {
+  const id = req.params.id;
+
+  database.query("DELETE FROM projects WHERE id = ?", [id], (err) => {
+    if (err) return res.send(err);
+
+    res.json({ message: "Deleted ✅" });
+  });
+});
+
 // Server start
 app.listen(4000, () => {
   console.log("Server running on port 4000");
