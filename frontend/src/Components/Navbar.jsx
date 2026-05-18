@@ -1,55 +1,57 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import './Navbar.css';
 
-const Navbar = () => {
+function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/');
+    window.location.reload();
+  };
+
   return (
-    <div className="flex items-center justify-between px-6 py-3 bg-white shadow">
-
-      {/* LEFT SECTION (LOGO + NAME) */}
-      <div className="flex items-center gap-3">
-        
-        {/* Custom Logo (simple square) */}
-        <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white font-bold">
-          PM
-        </div>
-
-        <span className="text-lg font-semibold text-gray-800">
-          ProjectManagement
-        </span>
-
-        {/* MENU */}
-        <div className="hidden md:flex gap-6 ml-8 text-gray-600">
-          <Link to="/dashboard" className="hover:text-black">Dashboard</Link>
-          <Link to="/project" className="hover:text-black">Projects</Link>
-          <Link to="/task" className="hover:text-black">Tasks</Link>
-          <Link to="/team" className="hover:text-black">Team</Link>
-        </div>
-      </div>
-
-      {/* RIGHT SECTION */}
-      <div className="flex items-center gap-5">
-
-        {/* SEARCH */}
-        <input
-          type="text"
-          placeholder="Search..."
-          className="hidden md:block px-3 py-1 border rounded-md text-sm"
-        />
-
-        {/* SIGN IN */}
-        <Link to="/login" className="text-gray-700 hover:text-black">
-          Sign in
+    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+      <div className="navbar-inner">
+        <Link to={user ? '/dashboard' : '/'} className="navbar-logo">
+          <div className="logo-icon">⚡</div>
+          <span>Projj</span>
         </Link>
 
-        {/* CTA BUTTON */}
-        <Link to="/signup" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-          Sign up
-        </Link>
-
+        <div className="navbar-links">
+          {user ? (
+            <>
+              <div className="navbar-user">
+                <div className="user-avatar">
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+                <span className="user-name">{user.name}</span>
+              </div>
+              <Link to="/dashboard" className="nav-btn-outline">Dashboard</Link>
+              <button onClick={handleLogout} className="logout-btn">Logout</button>
+            </>
+          ) : (
+            <>
+              <Link to="/signin">Sign In</Link>
+              <Link to="/signup" className="nav-btn-primary">Get Started</Link>
+            </>
+          )}
+        </div>
       </div>
-
-    </div>
+    </nav>
   );
-};
+}
 
 export default Navbar;

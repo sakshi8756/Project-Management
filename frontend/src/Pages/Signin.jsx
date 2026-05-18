@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Auth.css';
 
-function Signup() {
-  const [name, setName] = useState('');
+function Signin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -17,20 +16,21 @@ function Signup() {
     setMessage('');
 
     try {
-      const res = await fetch('http://localhost:4000/signup', {
+      const res = await fetch('http://localhost:4000/signin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
+        body: JSON.stringify({ email, password })
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        setMessage('Account created successfully! Redirecting...');
+        localStorage.setItem('user', JSON.stringify(data.user));
+        setMessage('Login successful! Redirecting...');
         setMessageType('success');
-        setTimeout(() => navigate('/signin'), 1500);
+        setTimeout(() => navigate('/dashboard'), 1000);
       } else {
-        setMessage(data.message || 'Signup failed');
+        setMessage(data.message || 'Login failed');
         setMessageType('error');
       }
     } catch (err) {
@@ -45,28 +45,16 @@ function Signup() {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-header">
-          <div className="auth-icon">🚀</div>
-          <h1>Create Account</h1>
-          <p>Start managing your projects today</p>
+          <div className="auth-icon">👋</div>
+          <h1>Welcome Back</h1>
+          <p>Sign in to continue to your dashboard</p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="signup-name">Full Name</label>
+            <label htmlFor="signin-email">Email Address</label>
             <input
-              id="signup-name"
-              type="text"
-              placeholder="Enter your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="signup-email">Email Address</label>
-            <input
-              id="signup-email"
+              id="signin-email"
               type="email"
               placeholder="you@example.com"
               value={email}
@@ -76,11 +64,11 @@ function Signup() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="signup-password">Password</label>
+            <label htmlFor="signin-password">Password</label>
             <input
-              id="signup-password"
+              id="signin-password"
               type="password"
-              placeholder="Create a password"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -94,14 +82,14 @@ function Signup() {
           )}
 
           <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Creating account...' : 'Create Account'}
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
         <div className="auth-footer">
           <p>
-            Already have an account?{' '}
-            <Link to="/signin">Sign in</Link>
+            Don't have an account?{' '}
+            <Link to="/signup">Create one</Link>
           </p>
         </div>
       </div>
@@ -109,4 +97,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default Signin;

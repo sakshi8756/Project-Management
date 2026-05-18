@@ -1,130 +1,224 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Dashboard.css';
 
-const Dashboard = () => {
-  const [open, setOpen] = useState(true);
+function Dashboard() {
+  const [projectName, setProjectName] = useState('');
+  const [projectDesc, setProjectDesc] = useState('');
+  const [allUsers, setAllUsers] = useState([]);
+  const [selectedMembers, setSelectedMembers] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const stats = [
-    { title: "Total Tasks", value: 24 },
-    { title: "Completed", value: 16 },
-    { title: "Pending", value: 8 },
-    { title: "Blocked", value: 3 },
-  ];
+  const user = JSON.parse(localStorage.getItem('user'));
 
-  const tasks = [
-    { name: "Build API", status: "In Progress", dependency: "None" },
-    { name: "Frontend UI", status: "Blocked", dependency: "Backend" },
-    { name: "Database Schema", status: "Pending", dependency: "Backend" },
-  ];
+  useEffect(() => {
+    if (!user) {
+      navigate('/signin');
+      return;
+    }
+    fetchUsers();
+    fetchProjects();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch('http://localhost:4000/users');
+      const data = await res.json();
+      setAllUsers(data.filter(u => u.id !== user.id));
+    } catch (err) {
+      console.error('Error fetching users');
+    }
+  };
+
+  const fetchProjects = async () => {
+    try {
+      const res = await fetch(`http://localhost:4000/user-projects/${user.id}`);
+      const data = await res.json();
+      setProjects(data);
+    } catch (err) {
+      console.error('Error fetching projects');
+    }
+  };
+
+  const toggleMember = (memberId) => {
+    setSelectedMembers(prev =>
+      prev.includes(memberId)
+        ? prev.filter(id => id !== memberId)
+        : [...prev, memberId]
+    );
+  };
+
+  const handleCreateProject = async (e) => {
+    e.preventDefault();
+    if (!projectName.trim()) return;
+
+    setLoading(true);
+    setMessage('');
+
+    try {
+      const res = await fetch('http://localhost:4000/create-project', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: projectName,
+          description: projectDesc,
+          userId: user.id,
+          members: selectedMembers
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setMessage('Project created successfully!');
+        setMessageType('success');
+        setProjectName('');
+        setProjectDesc('');
+        setSelectedMembers([]);
+        fetchProjects();
+      } else {
+        setMessage(data.message || 'Failed to create project');
+        setMessageType('error');
+      }
+    } catch (err) {
+      setMessage('Server not reachable');
+      setMessageType('error');
+    }
+
+    setLoading(false);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  const formatDate = (dateStr) => {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
+  if (!user) return null;
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-
-      {/* SIDEBAR */}
-      <div
-        className={`bg-blue-900 text-white p-5 transition-all duration-300 ${open ? "w-64" : "w-16"
-          }`}
-      >
-        {/* TOP */}
-        <div className="flex justify-between items-center mb-8">
-          {open && <h2 className="text-2xl font-bold">DevSutra</h2>}
-
-          {/* TOGGLE BUTTON */}
-          <button onClick={() => setOpen(!open)}>
-            {open ? "⬅️" : "➡️"}
-          </button>
+    <div className="dashboard">
+      <div className="dashboard-inner">
+        <div className="dashboard-header">
+          <h1>Welcome, {user.name} 👋</h1>
+          <p>Manage your projects and collaborate with your team.</p>
         </div>
 
-        {/* MENU */}
-        <ul className="space-y-4">
+        {/* Create Project */}
+        <div className="create-project-section">
+          <h2>➕ Create New Project</h2>
+          <div className="create-project-card">
+            <form className="create-form" onSubmit={handleCreateProject}>
+              <div className="form-group">
+                <label htmlFor="project-name">Project Title</label>
+                <input
+                  id="project-name"
+                  type="text"
+                  placeholder="My awesome project"
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                  required
+                />
+              </div>
 
-          <li>
-            <Link to="/" className="block hover:text-gray-300">
-              {open ? "Home" : "🏠"}
-            </Link>
-          </li>
+              <div className="form-group">
+                <label htmlFor="project-desc">Description</label>
+                <textarea
+                  id="project-desc"
+                  placeholder="Describe your project..."
+                  rows={3}
+                  value={projectDesc}
+                  onChange={(e) => setProjectDesc(e.target.value)}
+                />
+              </div>
 
-          <li>
-            <Link to="/project" className="block hover:text-gray-300">
-              {open ? "Projects" : "📁"}
-            </Link>
-          </li>
+              <div className="members-selection">
+                <label>Add Members</label>
+                <div className="members-list">
+                  {allUsers.length === 0 && (
+                    <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                      No other users yet. Invite people to sign up!
+                    </span>
+                  )}
+                  {allUsers.map(u => (
+                    <div
+                      key={u.id}
+                      className={`member-chip ${selectedMembers.includes(u.id) ? 'selected' : ''}`}
+                      onClick={() => toggleMember(u.id)}
+                    >
+                      <div className="chip-avatar">
+                        {u.name.charAt(0).toUpperCase()}
+                      </div>
+                      {u.name}
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-          <li>
-            <Link to="/task" className="block hover:text-gray-300">
-              {open ? "Tasks" : "📋"}
-            </Link>
-          </li>
+              {message && (
+                <div className={`create-message ${messageType}`}>
+                  {message}
+                </div>
+              )}
 
-          <li>
-            <Link to="/team" className="block hover:text-gray-300">
-              {open ? "Team" : "👥"}
-            </Link>
-          </li>
-
-          {/* FIXED ROUTE */}
-          <li>
-            <Link to="/setting" className="block hover:text-gray-300">
-              {open ? "Setting" : "⚙️"}
-            </Link>
-          </li>
-
-        </ul>
-      </div>
-
-      {/* MAIN CONTENT */}
-      <div className="flex-1 p-6">
-
-        {/* TOP BAR */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-gray-600">Hi Sakshi 👋</p>
+              <div className="create-form-actions">
+                <button type="submit" className="btn btn-primary" disabled={loading}>
+                  {loading ? 'Creating...' : 'Create Project'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
 
-        {/* STATS */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {stats.map((item, index) => (
-            <div key={index} className="bg-white p-4 rounded-xl shadow">
-              <h3 className="text-gray-500">{item.title}</h3>
-              <p className="text-xl font-bold">{item.value}</p>
+        {/* Projects List */}
+        <div className="projects-section">
+          <h2>
+            📂 Your Projects
+            <span className="project-count">{projects.length}</span>
+          </h2>
+
+          {projects.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-icon">📋</div>
+              <h3>No projects yet</h3>
+              <p>Create your first project above to get started!</p>
             </div>
-          ))}
-        </div>
-
-        {/* PROJECT HEALTH */}
-        <div className="bg-white p-5 rounded-xl shadow mb-6">
-          <h2 className="text-lg font-semibold mb-2">Project Health</h2>
-          <p className="text-yellow-500 font-bold">⚠️ At Risk</p>
-        </div>
-
-        {/* TASK TABLE */}
-        <div className="bg-white p-5 rounded-xl shadow">
-          <h2 className="text-lg font-semibold mb-4">My Tasks</h2>
-
-          <table className="w-full text-left">
-            <thead>
-              <tr className="text-gray-500 border-b">
-                <th className="pb-2">Task</th>
-                <th>Status</th>
-                <th>Dependency</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {tasks.map((task, index) => (
-                <tr key={index} className="border-b">
-                  <td className="py-2">{task.name}</td>
-                  <td>{task.status}</td>
-                  <td>{task.dependency}</td>
-                </tr>
+          ) : (
+            <div className="projects-grid">
+              {projects.map((project) => (
+                <div
+                  key={project.id}
+                  className="project-card"
+                  onClick={() => navigate(`/project/${project.id}`)}
+                >
+                  <div className="project-card-header">
+                    <h3>{project.project_name}</h3>
+                    <span className={`project-role-badge ${project.role}`}>
+                      {project.role}
+                    </span>
+                  </div>
+                  <p>{project.description || 'No description'}</p>
+                  <div className="project-card-footer">
+                    <span className="project-date">
+                      {formatDate(project.created_at)}
+                    </span>
+                    <span className="project-arrow">→</span>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          )}
         </div>
-
       </div>
     </div>
   );
-};
+}
 
 export default Dashboard;
