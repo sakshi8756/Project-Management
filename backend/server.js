@@ -143,20 +143,32 @@ app.get('/projects', (req, res) => {
 });
 
 // ✅ GET USER'S PROJECTS (projects where user is a member)
-app.get('/user-projects/:userId', (req, res) => {
-  const userId = req.params.userId;
+app.get('/user-projects/:id', (req, res) => {
 
-  const sql = `
-    SELECT p.*, pm.role 
-    FROM projects p 
-    JOIN project_members pm ON p.id = pm.project_id 
+  const userId = req.params.id;
+
+  const query = `
+    SELECT 
+      p.id,
+      p.project_name,
+      p.description,
+      p.created_at,
+      pm.role
+    FROM project_members pm
+    JOIN projects p ON pm.project_id = p.id
     WHERE pm.user_id = ?
-    ORDER BY p.created_at DESC
   `;
 
-  database.query(sql, [userId], (err, result) => {
+  database.query(query, [userId], (err, result) => {
+
     if (err) {
-      return res.status(500).json({ message: "Error fetching user projects ❌" });
+
+      console.log("MYSQL ERROR:", err);
+
+      return res.status(500).json({
+        message: 'Database error',
+        error: err.message
+      });
     }
 
     res.json(result);

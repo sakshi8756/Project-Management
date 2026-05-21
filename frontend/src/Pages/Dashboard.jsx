@@ -34,15 +34,30 @@ function Dashboard() {
     }
   };
 
-  const fetchProjects = async () => {
-    try {
-      const res = await fetch(`http://localhost:4000/user-projects/${user.id}`);
-      const data = await res.json();
-      setProjects(data);
-    } catch (err) {
-      console.error('Error fetching projects');
+ const fetchProjects = async () => {
+  try {
+    const res = await fetch(`http://localhost:4000/user-projects/${user.id}`);
+
+    if (!res.ok) {
+      console.error('Server Error');
+      setProjects([]);
+      return;
     }
-  };
+
+    const data = await res.json();
+
+    if (Array.isArray(data)) {
+      setProjects(data);
+    } else {
+      console.error('Invalid project data:', data);
+      setProjects([]);
+    }
+
+  } catch (err) {
+    console.error('Error fetching projects:', err);
+    setProjects([]);
+  }
+};
 
   const toggleMember = (memberId) => {
     setSelectedMembers(prev =>
@@ -181,10 +196,12 @@ function Dashboard() {
         <div className="projects-section">
           <h2>
             📂 Your Projects
-            <span className="project-count">{projects.length}</span>
+            <span className="project-count">
+  {Array.isArray(projects) ? projects.length : 0}
+</span>
           </h2>
 
-          {projects.length === 0 ? (
+          {!Array.isArray(projects) || projects.length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon">📋</div>
               <h3>No projects yet</h3>
