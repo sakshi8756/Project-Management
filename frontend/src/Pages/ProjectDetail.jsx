@@ -96,6 +96,27 @@ function ProjectDetail() {
     } catch (err) { console.error(err); }
   };
 
+  const handleRemoveMember = async (memberId) => {
+    const confirmRemove = window.confirm(
+      "Remove this member from project?"
+    );
+    if (!confirmRemove) return;
+    try {
+      const res = await fetch(
+        `http://localhost:4000/remove-member/${id}/${memberId}/${user.id}`,
+        {
+          method: 'DELETE'
+        }
+      );
+      const data = await res.json();
+      alert(data.message);
+      fetchMembers();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to remove member");
+    }
+  };
+
   const handleCreateTaskForMember = async (memberId) => {
     if (!taskTitle.trim()) return;
 
@@ -233,15 +254,22 @@ function ProjectDetail() {
                       </div>
 
                       {isAdmin && (
-                        <button
-                          className="member-add-task-btn"
-                          onClick={() => {
-                            setTaskInputFor(taskInputFor === member.id ? null : member.id);
-                            setTaskTitle('');
-                          }}
-                        >
-                          + Task
-                        </button>
+                        <div className="member-actions">
+                          <button className="member-add-task-btn"
+                            onClick={() => {setTaskInputFor(taskInputFor === member.id ? null : member.id);
+                              setTaskTitle('');
+                            }}
+                          >
+                            + Task
+                          </button>
+                          {member.role !== 'admin' && (
+                            <button className="remove-member-btn"
+                              onClick={() => handleRemoveMember(member.id)}
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </div>
                       )}
                     </div>
 

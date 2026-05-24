@@ -18,9 +18,7 @@ app.get('/', (req, res) => {
 // ✅ SIGNUP (SAVE TO SQL)
 app.post('/signup', (req, res) => {
   const { name, email, password } = req.body;
-
   const sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
-
   database.query(sql, [name, email, password], (err, result) => {
     if (err) {
       return res.status(500).json({
@@ -73,9 +71,7 @@ app.post('/signin', (req, res) => {
 // ✅ CREATE PROJECT
 app.post('/create-project', (req, res) => {
   const { name, description, userId, members } = req.body;
-
   const sql = "INSERT INTO projects (project_name, description, created_by) VALUES (?, ?, ?)";
-
   database.query(sql, [name, description, userId], (err, result) => {
     if (err) {
       return res.status(500).json({
@@ -102,7 +98,6 @@ app.post('/create-project', (req, res) => {
         }
       });
     }
-
     res.json({
       message: "Project created ✅",
       projectId
@@ -113,40 +108,73 @@ app.post('/create-project', (req, res) => {
 // ✅ ADD MEMBER
 app.post('/add-member', (req, res) => {
   const { userId, projectId, role } = req.body;
-
   const sql = "INSERT INTO project_members (user_id, project_id, role) VALUES (?, ?, ?)";
-
   database.query(sql, [userId, projectId, role || 'member'], (err) => {
     if (err) {
       return res.status(500).json({
         message: "Error adding member ❌"
       });
     }
-
     res.json({
       message: "Member added ✅"
     });
   });
 });
+// ✅ REMOVE MEMBER
+app.delete('/remove-member/:projectId/:memberId/:adminId', (req, res) => {
+  const { projectId, memberId, adminId } = req.params;
+  // check admin
+  const checkAdminQuery = `SELECT * FROM project_members WHERE project_id = ? AND user_id = ?
+    AND role = 'admin' `;
+  database.query(checkAdminQuery,
+    [projectId, adminId],
+    (err, result) => {
+      if (err) {return res.status(500).json({message: "Server Error ❌"});
+      }
+      if (result.length === 0) {
+        return res.status(403).json({
+          message: "Only admin can remove members ❌"
+        });
+      }
+      // prevent admin removing self
+      if (parseInt(memberId) === parseInt(adminId)) {
+        return res.status(400).json({
+          message: "Admin cannot remove themselves ❌"
+        });
+      }
+      // remove member
+      database.query(
+        "DELETE FROM project_members WHERE project_id = ? AND user_id = ?",
+        [projectId, memberId],
+        (err) => {
+          if (err) {
+            return res.status(500).json({
+              message: "Error removing member ❌"
+            });
+          }
+          res.json({
+            message: "Member removed successfully ✅"
+          });
+        }
+      );
+    }
+  );
+});
 
 // ✅ GET ALL PROJECTS
 app.get('/projects', (req, res) => {
   const sql = "SELECT * FROM projects";
-
   database.query(sql, (err, result) => {
     if (err) {
       return res.status(500).json({ message: "Error ❌" });
     }
-
     res.json(result);
   });
 });
 
 // ✅ GET USER'S PROJECTS (projects where user is a member)
 app.get('/user-projects/:id', (req, res) => {
-
   const userId = req.params.id;
-
   const query = `
     SELECT 
       p.id,
@@ -160,17 +188,13 @@ app.get('/user-projects/:id', (req, res) => {
   `;
 
   database.query(query, [userId], (err, result) => {
-
     if (err) {
-
       console.log("MYSQL ERROR:", err);
-
       return res.status(500).json({
         message: 'Database error',
         error: err.message
       });
     }
-
     res.json(result);
   });
 });
@@ -178,14 +202,11 @@ app.get('/user-projects/:id', (req, res) => {
 // ✅ GET SINGLE PROJECT
 app.get('/project/:id', (req, res) => {
   const id = req.params.id;
-
   database.query("SELECT * FROM projects WHERE id = ?", [id], (err, result) => {
     if (err) return res.status(500).json({ message: "Error ❌" });
-
     if (result.length === 0) {
       return res.status(404).json({ message: "Project not found ❌" });
     }
-
     res.json(result[0]);
   });
 });
@@ -193,7 +214,6 @@ app.get('/project/:id', (req, res) => {
 // ✅ GET PROJECT MEMBERS with progress
 app.get('/project-members/:projectId', (req, res) => {
   const projectId = req.params.projectId;
-
   const sql = `
     SELECT 
       u.id, u.name, u.email, pm.role,
@@ -208,12 +228,10 @@ app.get('/project-members/:projectId', (req, res) => {
     if (err) {
       return res.status(500).json({ message: "Error fetching members ❌" });
     }
-
     const members = result.map(m => ({
       ...m,
       progress: m.total_tasks > 0 ? Math.round((m.completed_tasks / m.total_tasks) * 100) : 0
     }));
-
     res.json(members);
   });
 });
@@ -221,17 +239,14 @@ app.get('/project-members/:projectId', (req, res) => {
 // ✅ GET USER ROLE IN PROJECT
 app.get('/user-role/:projectId/:userId', (req, res) => {
   const { projectId, userId } = req.params;
-
   database.query(
     "SELECT role FROM project_members WHERE project_id = ? AND user_id = ?",
     [projectId, userId],
     (err, result) => {
       if (err) return res.status(500).json({ message: "Error ❌" });
-
       if (result.length === 0) {
         return res.status(404).json({ message: "Not a member ❌" });
       }
-
       res.json({ role: result[0].role });
     }
   );
@@ -241,7 +256,6 @@ app.get('/user-role/:projectId/:userId', (req, res) => {
 app.get('/users', (req, res) => {
   database.query("SELECT id, name, email FROM users", (err, result) => {
     if (err) return res.status(500).json({ message: "Error ❌" });
-
     res.json(result);
   });
 });
@@ -249,14 +263,11 @@ app.get('/users', (req, res) => {
 // ✅ CREATE TASK
 app.post('/create-task', (req, res) => {
   const { projectId, userId, title } = req.body;
-
   const sql = "INSERT INTO tasks (project_id, user_id, title) VALUES (?, ?, ?)";
-
   database.query(sql, [projectId, userId, title], (err) => {
     if (err) {
       return res.status(500).json({ message: "Error creating task ❌" });
     }
-
     res.json({ message: "Task created ✅" });
   });
 });
@@ -264,7 +275,6 @@ app.post('/create-task', (req, res) => {
 // ✅ GET TASKS FOR A PROJECT
 app.get('/tasks/:projectId', (req, res) => {
   const projectId = req.params.projectId;
-
   const sql = `
     SELECT t.*, u.name as assigned_to_name 
     FROM tasks t 
@@ -272,10 +282,8 @@ app.get('/tasks/:projectId', (req, res) => {
     WHERE t.project_id = ?
     ORDER BY t.created_at DESC
   `;
-
   database.query(sql, [projectId], (err, result) => {
     if (err) return res.status(500).json({ message: "Error ❌" });
-
     res.json(result);
   });
 });
@@ -283,12 +291,9 @@ app.get('/tasks/:projectId', (req, res) => {
 // ✅ GET TASKS FOR A SPECIFIC USER IN A PROJECT
 app.get('/tasks/:projectId/:userId', (req, res) => {
   const { projectId, userId } = req.params;
-
   const sql = "SELECT * FROM tasks WHERE project_id = ? AND user_id = ? ORDER BY created_at DESC";
-
   database.query(sql, [projectId, userId], (err, result) => {
     if (err) return res.status(500).json({ message: "Error ❌" });
-
     res.json(result);
   });
 });
@@ -296,13 +301,11 @@ app.get('/tasks/:projectId/:userId', (req, res) => {
 // ✅ TOGGLE TASK COMPLETION
 app.put('/toggle-task/:taskId', (req, res) => {
   const taskId = req.params.taskId;
-
   database.query(
     "UPDATE tasks SET is_completed = NOT is_completed WHERE id = ?",
     [taskId],
     (err) => {
       if (err) return res.status(500).json({ message: "Error ❌" });
-
       res.json({ message: "Task toggled ✅" });
     }
   );
@@ -311,12 +314,27 @@ app.put('/toggle-task/:taskId', (req, res) => {
 // ✅ DELETE PROJECT
 app.delete('/delete-project/:id', (req, res) => {
   const id = req.params.id;
-
-  database.query("DELETE FROM projects WHERE id = ?", [id], (err) => {
-    if (err) return res.send(err);
-
-    res.json({ message: "Deleted ✅" });
-  });
+  database.query(
+    "DELETE FROM project_members WHERE project_id = ?",
+    [id],
+    (err) => {
+      if (err) return res.send(err);
+      database.query(
+        "DELETE FROM tasks WHERE project_id = ?",
+        [id],
+        (err) => {
+          if (err) return res.send(err);
+          database.query("DELETE FROM projects WHERE id = ?",
+            [id],
+            (err) => {
+              if (err) return res.send(err);
+              res.json({message: "Project Deleted Successfully ✅"});
+            }
+          );
+        }
+      );
+    }
+  );
 });
 
 // Server start
