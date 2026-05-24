@@ -27,8 +27,11 @@ function Navbar() {
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-inner">
         <Link to={user ? '/dashboard' : '/'} className="navbar-logo">
-          <div className="logo-icon">⚡</div>
-          <span>Projj</span>
+          <div className="logo-icon">
+            <img src="/logo.png" alt="Planify Logo" />
+          </div>
+
+          <span>Planify</span>
         </Link>
 
         <div className="navbar-links">
